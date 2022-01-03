@@ -1,6 +1,7 @@
 # The siteAdapter handles fetching resources from sites, including origin
 # and local browser storage.
 
+require 'regenerator-runtime/runtime'
 queue = require 'async/queue'
 localForage = require 'localforage'
 
@@ -175,6 +176,21 @@ siteAdapter.origin = {
         'action': JSON.stringify(data)
       success: () -> done null
       error: (xhr, type, msg) -> done {xhr, type, msg}
+    try
+      # FIXME proper require
+      arweave = Arweave.init({
+        host: 'arweave.net'
+        port: 443,
+        protocol: 'https'})
+      tx = await arweave.createTransaction({ data: JSON.stringify(data) })
+      tx.addTag('App-Name', 'FedARWiki')
+      tx.addTag('Content-Type', 'application/json')
+      tx.addTag('Hostname', window.location.hostname)
+      tx.addTag('Page', route)
+      await arweave.transactions.sign(tx)
+      await arweave.transactions.post(tx)
+    catch error
+      console.log 'write to arweave failed', error
   delete: (route, done) ->
     console.log "wiki.origin.delete #{route}"
     $.ajax

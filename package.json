@@ -27,6 +27,7 @@
   "dependencies": {
     "async": "^3.2.1",
     "localforage": "^1.7.3",
+    "regenerator-runtime": "^0.13.9",
     "underscore": "^1.9.2"
   },
   "scripts": {
