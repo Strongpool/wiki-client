@@ -177,11 +177,6 @@ siteAdapter.origin = {
       success: () -> done null
       error: (xhr, type, msg) -> done {xhr, type, msg}
     try
-      # FIXME proper require
-      arweave = Arweave.init({
-        host: 'arweave.net'
-        port: 443,
-        protocol: 'https'})
       tx = await arweave.createTransaction({ data: JSON.stringify(data) })
       tx.addTag('App-Name', 'FedARWiki')
       tx.addTag('Content-Type', 'application/json')
